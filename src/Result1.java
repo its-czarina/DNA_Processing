@@ -1,3 +1,11 @@
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFileChooser;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -46,6 +54,7 @@ public class Result1 extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jTextPane1.setEditable(false);
         jScrollPane1.setViewportView(jTextPane1);
 
         jButton1.setText("Back");
@@ -63,6 +72,11 @@ public class Result1 extends javax.swing.JFrame {
         });
 
         jButton3.setText("Save as FASTA");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -101,13 +115,43 @@ public class Result1 extends javax.swing.JFrame {
         a.removeText();
         a.setVisible(true);
         this.setVisible(false);
-        
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         a.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        String s = "";
+        String[] temp = jTextPane1.getText().split("\n");
+        for (int i = 0; i < temp.length; i++){
+            if (i%2==1){
+                s += ">SEQUENCE_" + ((i/2)+1) + "\n";
+                s += temp[i];
+                s += "\n";
+            }
+        }
+        
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new File("Documents"));
+        int retrival = chooser.showSaveDialog(null);
+        if (retrival == JFileChooser.APPROVE_OPTION) {
+            FileWriter fw = null;
+            try {
+                fw = new FileWriter(chooser.getSelectedFile()+".FASTA");
+                fw.write(s);
+            } catch (IOException ex) {
+                Logger.getLogger(Result1.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    fw.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(Result1.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments

@@ -1,3 +1,17 @@
+
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ImageIcon;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -10,12 +24,92 @@
  */
 public class Result3 extends javax.swing.JFrame {
 
+    String[] input;
+    int[] a;
+    int[] c;
+    int[] g;
+    int[] t;
     /**
      * Creates new form Result3
      */
-    public Result3() {
+
+    public Result3(String[] s) {
         initComponents();
+        input = s;
+        input = removeSpaces(input);
+        getFrequencies();
+        this.setDefaultCloseOperation(this.DISPOSE_ON_CLOSE);
+        this.setVisible(true);
     }
+    
+    public String[] removeSpaces(String[] s){
+        for (int i = 0; i < s.length; i++){
+            s[i] = s[i].replaceAll(" ", "");
+        }
+        return s;
+    }
+    
+    public void getFrequencies(){
+        int max = 0;
+        for (int i = 0; i < input.length; i++){
+            if (max < input[i].length()){
+                max = input[i].length();
+            }
+            input[i] = input[i].toUpperCase();
+        }
+        max -=1;
+        a = new int[max];
+        c = new int[max];
+        g = new int[max];
+        t = new int[max];
+        for (int i = 0; i < max; i++){ // position
+            for (int j=0; j < input.length; j++){ // get char at i from input j
+                if (i < input[j].length()){
+                    switch (input[j].charAt(i)){
+                        case 'A':
+                            a[i]++;
+                            break;
+                        case 'C':
+                            c[i]++;
+                            break;
+                        case 'G':
+                            g[i]++;
+                            break;
+                        case 'T':
+                            t[i]++;
+                            break;
+                    }
+                }
+            }
+        }
+        createGraphs();
+    }
+    
+    public void createGraphs(){
+        XYSeries a_data = new XYSeries("A");
+        XYSeries c_data = new XYSeries("C");
+        XYSeries g_data = new XYSeries("G");
+        XYSeries t_data = new XYSeries("T");
+        for (int i = 0; i < a.length; i++){
+            a_data.add(i, a[i]);
+            c_data.add(i, c[i]);
+            g_data.add(i, g[i]);
+            t_data.add(i, t[i]);
+        }
+
+        XYSeriesCollection my_data_series= new XYSeriesCollection();
+        my_data_series.addSeries(a_data);
+        my_data_series.addSeries(c_data);
+        my_data_series.addSeries(g_data);
+        my_data_series.addSeries(t_data);
+
+        JFreeChart XYLineChart=ChartFactory.createXYLineChart("Frequency Table","Position","No. of Occurences",my_data_series,PlotOrientation.VERTICAL,true,true,false);
+        BufferedImage bImage1 = (BufferedImage) XYLineChart.createBufferedImage(690, 337); 
+        ImageIcon imageIcon1 = new ImageIcon(bImage1); 
+        jLabel1.setIcon(imageIcon1); 
+        
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -26,17 +120,34 @@ public class Result3 extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel1 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jButton1.setText("jButton1");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(612, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addGap(26, 26, 26))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 338, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jButton1)
+                .addContainerGap(50, Short.MAX_VALUE))
         );
 
         pack();
@@ -72,11 +183,13 @@ public class Result3 extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Result3().setVisible(true);
+                new Result3(new String[4]).setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }

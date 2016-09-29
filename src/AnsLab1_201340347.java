@@ -1,5 +1,12 @@
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -21,6 +28,7 @@ public class AnsLab1_201340347 extends javax.swing.JFrame {
     HashMap<String, String> translated = new HashMap();
     Result1 r1;
     Result2 r2;
+    Result3 r3;
     
     
     public AnsLab1_201340347() {
@@ -166,6 +174,11 @@ public class AnsLab1_201340347 extends javax.swing.JFrame {
         });
 
         Upload.setText("Upload");
+        Upload.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                UploadActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("OR");
 
@@ -177,6 +190,11 @@ public class AnsLab1_201340347 extends javax.swing.JFrame {
         });
 
         jButton2.setText("Trend of Nucleotide Occurrences");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -298,6 +316,37 @@ public class AnsLab1_201340347 extends javax.swing.JFrame {
         
         r2 = new Result2(nucleotide, percentage, this);
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        String[] str = this.sequence_txt.getText().split("\n");
+        System.out.println("HERE");
+        r3 = new Result3(str);
+        
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void UploadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UploadActionPerformed
+        JFileChooser chooser = new JFileChooser();
+        File f = new File("");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("FASTA file", "fasta");
+        chooser.setFileFilter(filter);
+        chooser.setCurrentDirectory(new File("Documents"));
+        int returnVal = chooser.showOpenDialog(this.getParent());
+        if(returnVal == JFileChooser.APPROVE_OPTION) {
+           System.out.println("You chose to open this file: " +
+                chooser.getSelectedFile().getName());
+           f = chooser.getSelectedFile();
+       }
+        try {
+            Scanner scan = new Scanner(f);
+            String s = "";
+            while (scan.hasNext()){
+                s += scan.nextLine() + "\n";
+            }
+            this.sequence_txt.setText(s);
+        } catch (FileNotFoundException e) {
+            Logger.getLogger(AnsLab1_201340347.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_UploadActionPerformed
 
     /**
      * @param args the command line arguments
