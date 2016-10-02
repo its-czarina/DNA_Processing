@@ -1,6 +1,13 @@
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
 import javax.swing.JTable;
 import javax.swing.table.JTableHeader;
 
@@ -25,10 +32,11 @@ public class Result2 extends javax.swing.JFrame {
         initComponents();
         
     }
-    
-    public static BufferedImage createImage(JTable table) {
+
+    public void createImage1() {
+        JTable table = jTable1;
         JTableHeader tableHeaderComp = table.getTableHeader();
-        int totalWidth = tableHeaderComp.getWidth() + table.getWidth();
+        int totalWidth = tableHeaderComp.getWidth();
         int totalHeight = tableHeaderComp.getHeight() + table.getHeight();
         BufferedImage tableImage = new BufferedImage(totalWidth, totalHeight,
             BufferedImage.TYPE_INT_RGB);
@@ -36,16 +44,54 @@ public class Result2 extends javax.swing.JFrame {
         tableHeaderComp.paint(g2D);
         g2D.translate(0, tableHeaderComp.getHeight());
         table.paint(g2D);
-        return tableImage;
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new File("Documents"));
+        int retrival = chooser.showSaveDialog(null);
+        if (retrival == JFileChooser.APPROVE_OPTION) {
+            try {
+                ImageIO.write(tableImage, "jpg", new File(chooser.getSelectedFile()+".jpg")); 
+            } catch (IOException ex) {
+                Logger.getLogger(Result1.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+    }
+    
+    public void createImage() {
+        JTable table = jTable1;
+        JTableHeader tableHeaderComp = table.getTableHeader();
+        int totalWidth = tableHeaderComp.getWidth();
+        int totalHeight = tableHeaderComp.getHeight() + table.getHeight();
+        BufferedImage tableImage = new BufferedImage(totalWidth, totalHeight,
+            BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2D = (Graphics2D) tableImage.getGraphics();
+        tableHeaderComp.paint(g2D);
+        g2D.translate(0, tableHeaderComp.getHeight());
+        table.paint(g2D);
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new File("Documents"));
+        int retrival = chooser.showSaveDialog(null);
+        if (retrival == JFileChooser.APPROVE_OPTION) {
+            try {
+                ImageIO.write(tableImage, "png", new File(chooser.getSelectedFile()+".png")); 
+            } catch (IOException ex) {
+                Logger.getLogger(Result1.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
     }
     
     public Result2(int[] f, float[] p, AnsLab1_201340347 a) {
         initComponents();
+        int total = 0;
         this.setDefaultCloseOperation(this.DISPOSE_ON_CLOSE);
         for (int i = 0; i < f.length; i++){
             jTable1.setValueAt(f[i], i, 1);
+            total += f[i];
             jTable1.setValueAt(p[i], i, 2);
         }
+        jTable1.setValueAt(total, f.length, 1);
+        jTable1.setValueAt(100, f.length, 2);
         this.a = a;
         this.setVisible(true);
     }
@@ -64,6 +110,7 @@ public class Result2 extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -73,7 +120,8 @@ public class Result2 extends javax.swing.JFrame {
                 {"A", null, null},
                 {"C", null, null},
                 {"G", null, null},
-                {"T", null, null}
+                {"T", null, null},
+                {"Total", null, null}
             },
             new String [] {
                 "Nucleotide", "Frequency", "Percentage"
@@ -102,6 +150,11 @@ public class Result2 extends javax.swing.JFrame {
         }
 
         jButton1.setText("Save as JPG");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Back");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -117,6 +170,13 @@ public class Result2 extends javax.swing.JFrame {
             }
         });
 
+        jButton4.setText("Save as PNG");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -127,7 +187,9 @@ public class Result2 extends javax.swing.JFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 140, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
                         .addComponent(jButton3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2)))
@@ -142,7 +204,8 @@ public class Result2 extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2)
-                    .addComponent(jButton3))
+                    .addComponent(jButton3)
+                    .addComponent(jButton4))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -162,6 +225,14 @@ public class Result2 extends javax.swing.JFrame {
         this.setVisible(false);
         
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        createImage1();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        createImage();
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -203,6 +274,7 @@ public class Result2 extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables

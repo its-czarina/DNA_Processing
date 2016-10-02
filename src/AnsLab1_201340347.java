@@ -1,6 +1,7 @@
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -267,20 +268,57 @@ public class AnsLab1_201340347 extends javax.swing.JFrame {
         // TODO add your handling code here:
         String seq = sequence_txt.getText();
         String[] seq_arr = seq.split("\n");
-        String translated_seq = "";
+        String stranslate = "";
+        ArrayList<String> title = new ArrayList();
+        ArrayList<ArrayList<String>> before_trans = new ArrayList();
+        ArrayList<ArrayList<String>> after_trans = new ArrayList();
+        
+        ArrayList<String> arr1 = new ArrayList();
+        ArrayList<String> arr2 = new ArrayList();
         for (String s: seq_arr){
-            translated_seq += s + "\n";
-            for (int i = 0; i < s.length()-2; i+=3){
-                System.out.println(s.substring(i, i+3).toUpperCase());
-                String aminoacid = table.get(s.substring(i, i+3).toUpperCase());
-                System.out.println(aminoacid);
-                System.out.println(translated.get(aminoacid));
-                translated_seq += translated.get(aminoacid);
+            if (s.contains(">")){
+                title.add(s);
+                if (!arr1.isEmpty()){
+                    before_trans.add(arr1);
+                    after_trans.add(arr2);
+                    arr1 = new ArrayList();
+                    arr2 = new ArrayList();
+                }
             }
-            translated_seq += "\n";
+            else{
+                arr1.add(s);
+                String translated_seq = "";
+                for (int i = 0; i < s.length()-2; i+=3){
+                    System.out.println(s.substring(i, i+3).toUpperCase());
+                    String aminoacid = table.get(s.substring(i, i+3).toUpperCase());
+                    System.out.println(aminoacid);
+                    System.out.println(translated.get(aminoacid));
+                    translated_seq += translated.get(aminoacid);
+                }
+                arr2.add(translated_seq);
+            }
+        }
+        if (!arr1.isEmpty()){
+            before_trans.add(arr1);
+            after_trans.add(arr2);
         }
         
-        r1 = new Result1(translated_seq, this);
+        for (int i = 0; i < before_trans.size(); i++){
+            if (title.isEmpty()){
+                stranslate += ">SEQUENCE_"+(i+1) + "\n";
+            }
+            else{
+                stranslate += title.get(i) + "\n";
+            }
+            for (int j = 0; j < before_trans.get(i).size(); j++){
+                stranslate += before_trans.get(i).get(j) + "\n";
+            }
+            for (int j = 0; j < after_trans.get(i).size(); j++){
+                stranslate += after_trans.get(i).get(j) + "\n";
+            }
+        }
+        
+        r1 = new Result1(stranslate, this);
         
     }//GEN-LAST:event_analyzeActionPerformed
 
@@ -289,22 +327,30 @@ public class AnsLab1_201340347 extends javax.swing.JFrame {
         s = s.toUpperCase();
         int[] nucleotide = new int[4];
         int size = 0;
-        for (int i = 0; i < s.length(); i++){
-            if (s.charAt(i) == 'A'){
-                nucleotide[0] += 1;
-                size++;
+        String[] res = s.split("\n");
+        for (int j = 0; j < res.length; j++){
+            if (res[j].contains(">")){
+                //do nothing
             }
-            if (s.charAt(i) == 'C'){
-                nucleotide[1] += 1;
-                size++;
-            }
-            if (s.charAt(i) == 'G'){
-                nucleotide[2] += 1;
-                size++;
-            }
-            if (s.charAt(i) == 'T'){
-                nucleotide[3] += 1;
-                size++;
+            else{
+                for (int i = 0; i < res[j].length(); i++){
+                    if (res[j].charAt(i) == 'A'){
+                        nucleotide[0] += 1;
+                        size++;
+                    }
+                    if (res[j].charAt(i) == 'C'){
+                        nucleotide[1] += 1;
+                        size++;
+                    }
+                    if (res[j].charAt(i) == 'G'){
+                        nucleotide[2] += 1;
+                        size++;
+                    }
+                    if (res[j].charAt(i) == 'T'){
+                        nucleotide[3] += 1;
+                        size++;
+                    }
+                }
             }
         }
         
@@ -320,7 +366,7 @@ public class AnsLab1_201340347 extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         String[] str = this.sequence_txt.getText().split("\n");
         System.out.println("HERE");
-        r3 = new Result3(str);
+        r3 = new Result3(str, this);
         
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -343,7 +389,7 @@ public class AnsLab1_201340347 extends javax.swing.JFrame {
                 s += scan.nextLine() + "\n";
             }
             this.sequence_txt.setText(s);
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException ex) {
             Logger.getLogger(AnsLab1_201340347.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_UploadActionPerformed

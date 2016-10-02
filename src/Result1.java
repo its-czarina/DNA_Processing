@@ -126,11 +126,8 @@ public class Result1 extends javax.swing.JFrame {
         String s = "";
         String[] temp = jTextPane1.getText().split("\n");
         for (int i = 0; i < temp.length; i++){
-            if (i%2==1){
-                s += ">SEQUENCE_" + ((i/2)+1) + "\n";
-                s += temp[i];
-                s += "\n";
-            }
+            s += temp[i];
+            s += "\n";
         }
         
         JFileChooser chooser = new JFileChooser();
